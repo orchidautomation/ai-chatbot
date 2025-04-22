@@ -56,17 +56,29 @@ export const register = async (
   formData: FormData,
 ): Promise<RegisterActionState> => {
   try {
+    console.log('Starting registration...');
+    console.log('Form data:', {
+      email: formData.get('email'),
+      password: formData.get('password')?.toString().length,
+    });
+    console.log('Starting registration...');
     const validatedData = authFormSchema.parse({
       email: formData.get('email'),
       password: formData.get('password'),
     });
 
+    console.log('Checking if user exists...');
+    console.log('Checking if user exists...');
     const [user] = await getUser(validatedData.email);
+    console.log('Existing user:', user);
 
     if (user) {
       return { status: 'user_exists' } as RegisterActionState;
     }
+    console.log('Creating new user...');
+    console.log('Creating new user...');
     await createUser(validatedData.email, validatedData.password);
+    console.log('User created successfully');
     await signIn('credentials', {
       email: validatedData.email,
       password: validatedData.password,
